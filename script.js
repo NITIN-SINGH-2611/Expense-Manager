@@ -168,10 +168,39 @@ function handleAddExpense(event) {
 function handleAddCreditExpense(event) {
     event.preventDefault();
     
-    const cardName = document.getElementById('creditCardName').value;
-    const amount = parseFloat(document.getElementById('creditAmount').value);
-    const description = document.getElementById('creditDescription').value || 'Credit Card Expense';
-    const date = document.getElementById('creditDate').value;
+    const cardNameInput = document.getElementById('creditCardName');
+    const amountInput = document.getElementById('creditAmount');
+    const descriptionInput = document.getElementById('creditDescription');
+    const dateInput = document.getElementById('creditDate');
+    
+    if (!cardNameInput || !amountInput || !dateInput) {
+        console.error('Credit form elements not found');
+        showNotification('Error: Form elements not found. Please refresh the page.');
+        return;
+    }
+    
+    const cardName = cardNameInput.value.trim();
+    const amount = parseFloat(amountInput.value);
+    const description = descriptionInput.value || 'Credit Card Expense';
+    
+    // Use today's date if date is not set
+    let date = dateInput.value;
+    if (!date) {
+        date = new Date().toISOString().split('T')[0];
+        dateInput.value = date;
+    }
+    
+    if (!cardName) {
+        showNotification('Please enter a card name!');
+        cardNameInput.focus();
+        return;
+    }
+    
+    if (!amount || amount <= 0) {
+        showNotification('Please enter a valid amount!');
+        amountInput.focus();
+        return;
+    }
     
     addRecord('credit', amount, cardName, description, date);
     closeModal('creditModal');
