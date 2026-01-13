@@ -44,7 +44,40 @@ document.addEventListener('DOMContentLoaded', function() {
     renderRecords();
     populateCategories();
     setDefaultDates();
+    createStarfield();
 });
+
+// Create animated starfield
+function createStarfield() {
+    const layers = [
+        { class: 'starfield-layer-1', count: 200, sizes: ['small', 'medium'] },
+        { class: 'starfield-layer-2', count: 150, sizes: ['small', 'medium', 'large'] },
+        { class: 'starfield-layer-3', count: 100, sizes: ['medium', 'large'] }
+    ];
+
+    layers.forEach(layer => {
+        const layerEl = document.querySelector(`.${layer.class}`);
+        if (!layerEl) return;
+
+        for (let i = 0; i < layer.count; i++) {
+            const star = document.createElement('div');
+            star.className = `star ${layer.sizes[Math.floor(Math.random() * layer.sizes.length)]}`;
+            
+            // Random position
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            
+            // Random animation delay
+            star.style.animationDelay = Math.random() * 5 + 's';
+            
+            // Random twinkle speed
+            const twinkleSpeed = 2 + Math.random() * 3;
+            star.style.animationDuration = twinkleSpeed + 's';
+            
+            layerEl.appendChild(star);
+        }
+    });
+}
 
 // Set default dates to today
 function setDefaultDates() {

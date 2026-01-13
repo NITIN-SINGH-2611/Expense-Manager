@@ -5,32 +5,142 @@
 }
 
 :root {
-    --bg-primary: #0a0e27;
-    --bg-secondary: #151932;
-    --bg-card: #1a1f3a;
-    --bg-modal: rgba(10, 14, 39, 0.95);
+    --bg-primary: #000000;
+    --bg-secondary: #0a0a0a;
+    --bg-card: rgba(26, 31, 58, 0.85);
+    --bg-modal: rgba(0, 0, 0, 0.95);
     --text-primary: #ffffff;
-    --text-secondary: #a0aec0;
-    --accent-blue: #667eea;
-    --accent-green: #48bb78;
-    --accent-red: #f56565;
-    --accent-yellow: #ed8936;
-    --border-color: rgba(102, 126, 234, 0.3);
-    --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    --text-secondary: #e0e0e0;
+    --accent-blue: #ffffff;
+    --accent-green: #ffffff;
+    --accent-red: #ffffff;
+    --accent-yellow: #ffffff;
+    --border-color: rgba(255, 255, 255, 0.2);
+    --shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
 }
 
+/* Animated Starfield Background */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: #000000;
     color: var(--text-primary);
     min-height: 100vh;
     padding: 20px;
     line-height: 1.6;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    z-index: -1;
+}
+
+/* Starfield Animation */
+.starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.starfield-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+}
+
+.star {
+    position: absolute;
+    background: #ffffff;
+    border-radius: 50%;
+    animation: twinkle linear infinite;
+}
+
+.star.small {
+    width: 1px;
+    height: 1px;
+    box-shadow: 0 0 2px #ffffff;
+}
+
+.star.medium {
+    width: 2px;
+    height: 2px;
+    box-shadow: 0 0 3px #ffffff, 0 0 6px #ffffff;
+}
+
+.star.large {
+    width: 3px;
+    height: 3px;
+    box-shadow: 0 0 4px #ffffff, 0 0 8px #ffffff, 0 0 12px #ffffff;
+}
+
+/* Moving stars effect */
+.starfield-layer-1 .star {
+    animation: moveStars1 50s linear infinite;
+}
+
+.starfield-layer-2 .star {
+    animation: moveStars2 80s linear infinite;
+}
+
+.starfield-layer-3 .star {
+    animation: moveStars3 120s linear infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@keyframes moveStars1 {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+    100% {
+        transform: translateY(-100vh) translateX(50px);
+    }
+}
+
+@keyframes moveStars2 {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+    100% {
+        transform: translateY(-100vh) translateX(-30px);
+    }
+}
+
+@keyframes moveStars3 {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+    100% {
+        transform: translateY(-100vh) translateX(20px);
+    }
 }
 
 .app-container {
     max-width: 1400px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
 /* Header */
@@ -38,28 +148,26 @@ body {
     text-align: center;
     margin-bottom: 40px;
     padding: 30px 20px;
-    background: rgba(26, 31, 58, 0.6);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(15px);
     border-radius: 20px;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 255, 255, 0.1);
 }
 
 .app-title {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 10px;
-    background: linear-gradient(135deg, var(--accent-blue), #764ba2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.5);
 }
 
 .app-title .icon {
     display: inline-block;
     margin-right: 10px;
     font-size: 2.5rem;
-    -webkit-text-fill-color: var(--accent-yellow);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
 }
 
 .app-subtitle {
@@ -76,36 +184,42 @@ body {
 }
 
 .stat-card {
-    background: var(--bg-card);
+    background: rgba(0, 0, 0, 0.7);
     padding: 25px;
     border-radius: 15px;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     gap: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .stat-card.income {
-    border-left: 4px solid var(--accent-green);
+    border-left: 4px solid #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .stat-card.expense {
-    border-left: 4px solid var(--accent-red);
+    border-left: 4px solid #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .stat-card.balance {
-    border-left: 4px solid var(--accent-blue);
+    border-left: 4px solid #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .stat-card.credit {
-    border-left: 4px solid var(--accent-yellow);
+    border-left: 4px solid #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 .stat-icon {
@@ -163,18 +277,39 @@ body {
 }
 
 .btn-income {
-    background: linear-gradient(135deg, var(--accent-green), #38a169);
+    background: rgba(255, 255, 255, 0.15);
     color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.btn-income:hover {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 .btn-expense {
-    background: linear-gradient(135deg, var(--accent-red), #e53e3e);
+    background: rgba(255, 255, 255, 0.15);
     color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.btn-expense:hover {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 .btn-credit {
-    background: linear-gradient(135deg, var(--accent-yellow), #dd6b20);
+    background: rgba(255, 255, 255, 0.15);
     color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.btn-credit:hover {
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 .btn-icon {
@@ -183,15 +318,17 @@ body {
 
 /* Filters Section */
 .filters-section {
-    background: var(--bg-card);
+    background: rgba(0, 0, 0, 0.7);
     padding: 20px;
     border-radius: 15px;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     margin-bottom: 30px;
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
     align-items: flex-end;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
 .filter-group {
@@ -210,24 +347,25 @@ body {
 .filter-group input {
     width: 100%;
     padding: 10px 15px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     color: var(--text-primary);
     font-size: 1rem;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .filter-group select:focus,
 .filter-group input:focus {
-    border-color: var(--accent-blue);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .btn-clear {
     padding: 10px 20px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     color: var(--text-primary);
     cursor: pointer;
@@ -235,17 +373,19 @@ body {
 }
 
 .btn-clear:hover {
-    background: var(--accent-red);
-    border-color: var(--accent-red);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 /* Records Section */
 .records-section {
-    background: var(--bg-card);
+    background: rgba(0, 0, 0, 0.7);
     padding: 25px;
     border-radius: 15px;
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .section-title {
@@ -264,7 +404,7 @@ body {
 }
 
 .records-table thead {
-    background: var(--bg-secondary);
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .records-table th {
@@ -272,17 +412,17 @@ body {
     text-align: left;
     color: var(--text-primary);
     font-weight: 600;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .records-table td {
     padding: 15px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text-secondary);
 }
 
 .records-table tbody tr:hover {
-    background: var(--bg-secondary);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .records-table tbody tr:last-child td {
@@ -305,21 +445,21 @@ body {
 }
 
 .type-income {
-    background: rgba(72, 187, 120, 0.2);
-    color: var(--accent-green);
-    border: 1px solid var(--accent-green);
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .type-expense {
-    background: rgba(245, 101, 101, 0.2);
-    color: var(--accent-red);
-    border: 1px solid var(--accent-red);
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .type-credit {
-    background: rgba(237, 137, 54, 0.2);
-    color: var(--accent-yellow);
-    border: 1px solid var(--accent-yellow);
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .amount {
@@ -328,27 +468,31 @@ body {
 }
 
 .amount.positive {
-    color: var(--accent-green);
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .amount.negative {
-    color: var(--accent-red);
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 .btn-delete {
     padding: 6px 12px;
-    background: var(--accent-red);
-    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 6px;
     color: white;
     cursor: pointer;
     font-size: 0.85rem;
     transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
 .btn-delete:hover {
-    background: #e53e3e;
+    background: rgba(255, 255, 255, 0.25);
     transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 /* Modal */
@@ -372,20 +516,21 @@ body {
 }
 
 .modal-content {
-    background: var(--bg-card);
+    background: rgba(0, 0, 0, 0.9);
     border-radius: 20px;
-    border: 1px solid var(--border-color);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     width: 90%;
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(255, 255, 255, 0.1);
     animation: slideUp 0.3s ease;
+    backdrop-filter: blur(20px);
 }
 
 .modal-header {
     padding: 20px 25px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -429,18 +574,19 @@ body {
 .form-group select {
     width: 100%;
     padding: 12px 15px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     color: var(--text-primary);
     font-size: 1rem;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-    border-color: var(--accent-blue);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .form-actions {
@@ -452,8 +598,8 @@ body {
 .btn-cancel {
     flex: 1;
     padding: 12px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px;
     color: var(--text-primary);
     cursor: pointer;
@@ -462,25 +608,28 @@ body {
 }
 
 .btn-cancel:hover {
-    background: var(--bg-primary);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 .btn-submit {
     flex: 1;
     padding: 12px;
-    background: linear-gradient(135deg, var(--accent-blue), #764ba2);
-    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     color: white;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
 }
 
 .btn-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 /* Animations */
