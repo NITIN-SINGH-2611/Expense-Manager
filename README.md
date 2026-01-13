@@ -1,12 +1,12 @@
 # Expense Manager 💰
 
-A comprehensive expense tracking application to manage your income, expenses, and credit card payments.
+A comprehensive expense tracking application to manage your income, expenses, and credit card expenses.
 
 ## ✨ Features
 
 - **Income Tracking** - Record all your income sources
 - **Expense Tracking** - Track all your expenses by category
-- **Credit Card Payments** - Monitor credit card payments and debt
+- **Credit Card Expenses** - Track credit card expenses and spending
 - **Statistics Dashboard** - View total income, expenses, balance, and credit debt
 - **Filtering** - Filter records by type, category, and date
 - **Data Persistence** - All data stored locally in browser (localStorage)
@@ -43,16 +43,16 @@ A comprehensive expense tracking application to manage your income, expenses, an
   - Other
 - View total expenses in dashboard
 
-### Credit Card Payments
-- Record credit card payments
-- Track credit card debt
-- Monitor payment history
+### Credit Card Expenses
+- Record credit card expenses
+- Track credit card spending
+- Monitor expense history
 
 ### Statistics
 - **Total Income** - Sum of all income records
 - **Total Expenses** - Sum of all expense records
 - **Balance** - Income minus expenses and credit debt
-- **Credit Card Debt** - Total credit card payments
+- **Credit Card Debt** - Total credit card expenses
 
 ### Filtering
 - Filter by type (Income/Expense/Credit)

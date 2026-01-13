@@ -145,12 +145,12 @@ function handleAddExpense(event) {
     closeModal('expenseModal');
 }
 
-function handleAddCreditPayment(event) {
+function handleAddCreditExpense(event) {
     event.preventDefault();
     
     const cardName = document.getElementById('creditCardName').value;
     const amount = parseFloat(document.getElementById('creditAmount').value);
-    const description = document.getElementById('creditDescription').value || 'Credit Card Payment';
+    const description = document.getElementById('creditDescription').value || 'Credit Card Expense';
     const date = document.getElementById('creditDate').value;
     
     addRecord('credit', amount, cardName, description, date);
@@ -175,7 +175,7 @@ function addRecord(type, amount, category, description, date) {
     renderRecords();
     
     // Show success message
-    showNotification(`${type === 'income' ? 'Income' : type === 'expense' ? 'Expense' : 'Credit Payment'} added successfully!`);
+    showNotification(`${type === 'income' ? 'Income' : type === 'expense' ? 'Expense' : 'Credit Card Expense'} added successfully!`);
 }
 
 // Delete record
