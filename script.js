@@ -2,7 +2,16 @@
 
 // Database key for localStorage (backup/cache)
 const DB_KEY = 'expense_manager_db';
-const API_BASE_URL = 'http://localhost:5002/api';
+
+// Determine API URL based on current location
+function getApiBaseUrl() {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:5002/api';
+    } else {
+        // For deployed server, use the same origin
+        return window.location.origin + '/api';
+    }
+}
 
 // Initialize database
 let expenseDB = {
@@ -17,7 +26,7 @@ let serverAvailable = false;
 async function loadDatabase() {
     try {
         // Try to load from server
-        const response = await fetch(`${API_BASE_URL}/get_expenses`);
+        const response = await fetch(`${getApiBaseUrl()}/get_expenses`);
         if (response.ok) {
             const data = await response.json();
             if (data.success) {
@@ -75,7 +84,7 @@ async function saveDatabaseToServer() {
     
     try {
         // Sync with server
-        const response = await fetch(`${API_BASE_URL}/sync`, {
+        const response = await fetch(`${getApiBaseUrl()}/sync`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -308,7 +317,7 @@ async function addRecord(type, amount, category, description, date) {
     // Try to save to server
     if (serverAvailable) {
         try {
-            const response = await fetch(`${API_BASE_URL}/add_expense`, {
+            const response = await fetch(`${getApiBaseUrl()}/add_expense`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -351,7 +360,7 @@ async function deleteRecord(id) {
         // Try to delete from server
         if (serverAvailable) {
             try {
-                const response = await fetch(`${API_BASE_URL}/delete_expense/${id}`, {
+                const response = await fetch(`${getApiBaseUrl()}/delete_expense/${id}`, {
                     method: 'DELETE',
                 });
                 
