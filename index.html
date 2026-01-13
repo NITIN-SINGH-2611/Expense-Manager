@@ -30,13 +30,6 @@
         <main class="main-content">
             <!-- Quick Stats -->
             <div class="stats-section">
-                <div class="stat-card income">
-                    <div class="stat-icon">📈</div>
-                    <div class="stat-info">
-                        <div class="stat-label">Total Income</div>
-                        <div class="stat-value" id="totalIncome">₹0</div>
-                    </div>
-                </div>
                 <div class="stat-card expense">
                     <div class="stat-icon">📉</div>
                     <div class="stat-info">
@@ -62,10 +55,6 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <button class="btn-action btn-income" onclick="showAddIncomeModal()">
-                    <span class="btn-icon">➕</span>
-                    Add Income
-                </button>
                 <button class="btn-action btn-expense" onclick="showAddExpenseModal()">
                     <span class="btn-icon">➖</span>
                     Add Expense
@@ -82,7 +71,6 @@
                     <label for="filterType">Filter by Type:</label>
                     <select id="filterType" onchange="applyFilters()">
                         <option value="all">All</option>
-                        <option value="income">Income</option>
                         <option value="expense">Expense</option>
                         <option value="credit">Credit Card</option>
                     </select>
@@ -117,53 +105,13 @@
                         </thead>
                         <tbody id="recordsTableBody">
                             <tr>
-                                <td colspan="6" class="no-data">No records yet. Add your first income or expense!</td>
+                                <td colspan="6" class="no-data">No records yet. Add your first expense!</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </main>
-    </div>
-
-    <!-- Add Income Modal -->
-    <div id="incomeModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Income</h3>
-                <button class="modal-close" onclick="closeModal('incomeModal')">✕</button>
-            </div>
-            <div class="modal-body">
-                <form id="incomeForm" onsubmit="handleAddIncome(event)">
-                    <div class="form-group">
-                        <label for="incomeAmount">Amount (₹)</label>
-                        <input type="number" id="incomeAmount" step="0.01" min="0" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="incomeCategory">Category</label>
-                        <select id="incomeCategory" required>
-                            <option value="salary">Salary</option>
-                            <option value="freelance">Freelance</option>
-                            <option value="investment">Investment</option>
-                            <option value="business">Business</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="incomeDescription">Description</label>
-                        <input type="text" id="incomeDescription" placeholder="e.g., Monthly salary">
-                    </div>
-                    <div class="form-group">
-                        <label for="incomeDate">Date</label>
-                        <input type="date" id="incomeDate" required>
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" class="btn-cancel" onclick="closeModal('incomeModal')">Cancel</button>
-                        <button type="submit" class="btn-submit">Add Income</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
     <!-- Add Expense Modal -->

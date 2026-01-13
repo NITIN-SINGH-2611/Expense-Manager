@@ -82,17 +82,11 @@ function createStarfield() {
 // Set default dates to today
 function setDefaultDates() {
     const today = new Date().toISOString().split('T')[0];
-    document.getElementById('incomeDate').value = today;
     document.getElementById('expenseDate').value = today;
     document.getElementById('creditDate').value = today;
 }
 
 // Modal functions
-function showAddIncomeModal() {
-    document.getElementById('incomeModal').classList.add('show');
-    document.getElementById('incomeAmount').focus();
-}
-
 function showAddExpenseModal() {
     document.getElementById('expenseModal').classList.add('show');
     document.getElementById('expenseAmount').focus();
@@ -106,8 +100,11 @@ function showAddCreditModal() {
 function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('show');
     // Reset forms
-    document.getElementById(modalId.replace('Modal', 'Form')).reset();
-    setDefaultDates();
+    const form = document.getElementById(modalId.replace('Modal', 'Form'));
+    if (form) {
+        form.reset();
+        setDefaultDates();
+    }
 }
 
 // Close modal on outside click
@@ -121,18 +118,6 @@ window.onclick = function(event) {
 };
 
 // Handle form submissions
-function handleAddIncome(event) {
-    event.preventDefault();
-    
-    const amount = parseFloat(document.getElementById('incomeAmount').value);
-    const category = document.getElementById('incomeCategory').value;
-    const description = document.getElementById('incomeDescription').value || 'Income';
-    const date = document.getElementById('incomeDate').value;
-    
-    addRecord('income', amount, category, description, date);
-    closeModal('incomeModal');
-}
-
 function handleAddExpense(event) {
     event.preventDefault();
     
@@ -175,7 +160,7 @@ function addRecord(type, amount, category, description, date) {
     renderRecords();
     
     // Show success message
-    showNotification(`${type === 'income' ? 'Income' : type === 'expense' ? 'Expense' : 'Credit Card Expense'} added successfully!`);
+    showNotification(`${type === 'expense' ? 'Expense' : 'Credit Card Expense'} added successfully!`);
 }
 
 // Delete record
@@ -224,34 +209,26 @@ function duplicateExpense(id) {
 
 // Update statistics
 function updateStats() {
-    let totalIncome = 0;
     let totalExpense = 0;
     let totalCreditDebt = 0;
     
     expenseDB.records.forEach(record => {
-        if (record.type === 'income') {
-            totalIncome += record.amount;
-        } else if (record.type === 'expense') {
+        if (record.type === 'expense') {
             totalExpense += record.amount;
         } else if (record.type === 'credit') {
             totalCreditDebt += record.amount;
         }
     });
     
-    const balance = totalIncome - totalExpense - totalCreditDebt;
+    const balance = -(totalExpense + totalCreditDebt);
     
-    document.getElementById('totalIncome').textContent = formatCurrency(totalIncome);
     document.getElementById('totalExpense').textContent = formatCurrency(totalExpense);
     document.getElementById('totalBalance').textContent = formatCurrency(balance);
     document.getElementById('totalCreditDebt').textContent = formatCurrency(totalCreditDebt);
     
-    // Update balance color
+    // Update balance color (always negative since no income)
     const balanceEl = document.getElementById('totalBalance');
-    if (balance >= 0) {
-        balanceEl.style.color = 'var(--accent-green)';
-    } else {
-        balanceEl.style.color = 'var(--accent-red)';
-    }
+    balanceEl.style.color = 'var(--accent-red)';
 }
 
 // Format currency
@@ -265,7 +242,7 @@ function renderRecords() {
     const filteredRecords = getFilteredRecords();
     
     if (filteredRecords.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="no-data">No records found. Add your first income or expense!</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="no-data">No records found. Add your first expense!</td></tr>';
         return;
     }
     
@@ -280,9 +257,9 @@ function renderRecords() {
         });
         
         const typeClass = `type-${record.type}`;
-        const typeLabel = record.type === 'income' ? 'Income' : record.type === 'expense' ? 'Expense' : 'Credit';
-        const amountClass = record.type === 'income' ? 'positive' : 'negative';
-        const amountSign = record.type === 'income' ? '+' : '-';
+        const typeLabel = record.type === 'expense' ? 'Expense' : 'Credit';
+        const amountClass = 'negative';
+        const amountSign = '-';
         
         // Show duplicate button only for expenses
         const duplicateButton = record.type === 'expense' 
