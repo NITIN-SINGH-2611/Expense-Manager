@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Manager - Track Your Finances</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="icon">💰</span>
+                    Expense Manager
+                </h1>
+                <p class="app-subtitle">Track Your Expenses & Credit Card Payments</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Quick Stats -->
+            <div class="stats-section">
+                <div class="stat-card income">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Total Income</div>
+                        <div class="stat-value" id="totalIncome">₹0</div>
+                    </div>
+                </div>
+                <div class="stat-card expense">
+                    <div class="stat-icon">📉</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Total Expenses</div>
+                        <div class="stat-value" id="totalExpense">₹0</div>
+                    </div>
+                </div>
+                <div class="stat-card balance">
+                    <div class="stat-icon">💳</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Balance</div>
+                        <div class="stat-value" id="totalBalance">₹0</div>
+                    </div>
+                </div>
+                <div class="stat-card credit">
+                    <div class="stat-icon">💳</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Credit Card Debt</div>
+                        <div class="stat-value" id="totalCreditDebt">₹0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-action btn-income" onclick="showAddIncomeModal()">
+                    <span class="btn-icon">➕</span>
+                    Add Income
+                </button>
+                <button class="btn-action btn-expense" onclick="showAddExpenseModal()">
+                    <span class="btn-icon">➖</span>
+                    Add Expense
+                </button>
+                <button class="btn-action btn-credit" onclick="showAddCreditModal()">
+                    <span class="btn-icon">💳</span>
+                    Credit Card Payment
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label for="filterType">Filter by Type:</label>
+                    <select id="filterType" onchange="applyFilters()">
+                        <option value="all">All</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                        <option value="credit">Credit Card</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterCategory">Filter by Category:</label>
+                    <select id="filterCategory" onchange="applyFilters()">
+                        <option value="all">All Categories</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterDate">Filter by Date:</label>
+                    <input type="month" id="filterDate" onchange="applyFilters()">
+                </div>
+                <button class="btn-clear" onclick="clearFilters()">Clear Filters</button>
+            </div>
+
+            <!-- Records Table -->
+            <div class="records-section">
+                <h2 class="section-title">📋 All Records</h2>
+                <div class="table-container">
+                    <table class="records-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Category</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsTableBody">
+                            <tr>
+                                <td colspan="6" class="no-data">No records yet. Add your first income or expense!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Income Modal -->
+    <div id="incomeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Income</h3>
+                <button class="modal-close" onclick="closeModal('incomeModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="incomeForm" onsubmit="handleAddIncome(event)">
+                    <div class="form-group">
+                        <label for="incomeAmount">Amount (₹)</label>
+                        <input type="number" id="incomeAmount" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="incomeCategory">Category</label>
+                        <select id="incomeCategory" required>
+                            <option value="salary">Salary</option>
+                            <option value="freelance">Freelance</option>
+                            <option value="investment">Investment</option>
+                            <option value="business">Business</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="incomeDescription">Description</label>
+                        <input type="text" id="incomeDescription" placeholder="e.g., Monthly salary">
+                    </div>
+                    <div class="form-group">
+                        <label for="incomeDate">Date</label>
+                        <input type="date" id="incomeDate" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('incomeModal')">Cancel</button>
+                        <button type="submit" class="btn-submit">Add Income</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="expenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Expense</h3>
+                <button class="modal-close" onclick="closeModal('expenseModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="expenseForm" onsubmit="handleAddExpense(event)">
+                    <div class="form-group">
+                        <label for="expenseAmount">Amount (₹)</label>
+                        <input type="number" id="expenseAmount" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseCategory">Category</label>
+                        <select id="expenseCategory" required>
+                            <option value="food">Food & Dining</option>
+                            <option value="transport">Transportation</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="bills">Bills & Utilities</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
+                            <option value="travel">Travel</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseDescription">Description</label>
+                        <input type="text" id="expenseDescription" placeholder="e.g., Grocery shopping">
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseDate">Date</label>
+                        <input type="date" id="expenseDate" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('expenseModal')">Cancel</button>
+                        <button type="submit" class="btn-submit">Add Expense</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Credit Card Payment Modal -->
+    <div id="creditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Credit Card Payment</h3>
+                <button class="modal-close" onclick="closeModal('creditModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="creditForm" onsubmit="handleAddCreditPayment(event)">
+                    <div class="form-group">
+                        <label for="creditCardName">Card Name</label>
+                        <input type="text" id="creditCardName" placeholder="e.g., HDFC Credit Card" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="creditAmount">Payment Amount (₹)</label>
+                        <input type="number" id="creditAmount" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="creditDescription">Description</label>
+                        <input type="text" id="creditDescription" placeholder="e.g., Monthly payment">
+                    </div>
+                    <div class="form-group">
+                        <label for="creditDate">Payment Date</label>
+                        <input type="date" id="creditDate" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal('creditModal')">Cancel</button>
+                        <button type="submit" class="btn-submit">Add Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
