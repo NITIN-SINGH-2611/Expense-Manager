@@ -1,7 +1,16 @@
-# Database (if using external storage)
-*.db
-*.sqlite
-*.json.bak
+# Database
+expense_data.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
 
 # IDE
 .vscode/

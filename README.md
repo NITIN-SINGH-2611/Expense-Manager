@@ -14,14 +14,21 @@ A comprehensive expense tracking application to manage your income, expenses, an
 
 ## 🚀 How to Use
 
-### Option 1: Local File
-1. Just open `index.html` in your browser
-2. Start adding your income and expenses!
+### Option 1: With Server (Recommended - Cross-Device Sync)
+1. Install Python dependencies: `pip install -r requirements.txt`
+2. Start the server: `python server.py` (or double-click `start_server.bat` on Windows)
+3. Open `http://localhost:5002` in your browser
+4. Your expenses will sync across all devices!
 
-### Option 2: GitHub Pages
+### Option 2: Local File (Offline Mode)
+1. Just open `index.html` in your browser
+2. Data will be stored locally in your browser
+3. Note: Data won't sync across devices without server
+
+### Option 3: GitHub Pages
 1. Push code to GitHub
 2. Enable GitHub Pages in repository settings
-3. Access your expense manager from anywhere!
+3. Note: For cross-device sync, you'll need to deploy the server separately
 
 ## 📊 Features Breakdown
 
@@ -62,11 +69,18 @@ A comprehensive expense tracking application to manage your income, expenses, an
 
 ## 💾 Data Storage
 
+### With Server (Recommended)
+- **Storage**: Server-side JSON file (`expense_data.json`)
+- **Sync**: Automatically syncs across all devices
+- **Backup**: Also saved to browser localStorage as backup
+- **Access**: Access from any device on the same network
+
+### Without Server (Offline Mode)
 - **Storage**: Browser localStorage
 - **Key**: `expense_manager_db`
 - **Format**: JSON
 - **Persistent**: Data stays even after browser closes
-- **Private**: All data stored locally on your device
+- **Note**: Data is device-specific and won't sync
 
 ## 📁 Project Structure
 

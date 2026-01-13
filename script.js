@@ -1,7 +1,8 @@
 // Expense Manager JavaScript
 
-// Database key for localStorage
+// Database key for localStorage (backup/cache)
 const DB_KEY = 'expense_manager_db';
+const API_BASE_URL = 'http://localhost:5002/api';
 
 // Initialize database
 let expenseDB = {
@@ -9,41 +10,118 @@ let expenseDB = {
     lastId: 0
 };
 
-// Load database from localStorage
-function loadDatabase() {
+// Check if server is available
+let serverAvailable = false;
+
+// Load database - try server first, then localStorage
+async function loadDatabase() {
+    try {
+        // Try to load from server
+        const response = await fetch(`${API_BASE_URL}/get_expenses`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+                expenseDB = {
+                    records: data.records || [],
+                    lastId: data.lastId || 0
+                };
+                serverAvailable = true;
+                console.log('✅ Database loaded from server:', expenseDB);
+                // Save to localStorage as backup
+                saveDatabaseToLocal();
+                return;
+            }
+        }
+    } catch (error) {
+        console.log('⚠️ Server not available, using localStorage:', error.message);
+        serverAvailable = false;
+    }
+    
+    // Fallback to localStorage
     try {
         const data = localStorage.getItem(DB_KEY);
         if (data) {
             expenseDB = JSON.parse(data);
-            console.log('Database loaded:', expenseDB);
+            console.log('📦 Database loaded from localStorage:', expenseDB);
         } else {
             console.log('Creating new database');
-            saveDatabase();
+            expenseDB = { records: [], lastId: 0 };
+            saveDatabaseToLocal();
         }
     } catch (error) {
         console.error('Error loading database:', error);
         expenseDB = { records: [], lastId: 0 };
-        saveDatabase();
+        saveDatabaseToLocal();
     }
 }
 
-// Save database to localStorage
-function saveDatabase() {
+// Save database to localStorage (backup)
+function saveDatabaseToLocal() {
     try {
         localStorage.setItem(DB_KEY, JSON.stringify(expenseDB));
-        console.log('Database saved');
+        console.log('💾 Database saved to localStorage (backup)');
     } catch (error) {
-        console.error('Error saving database:', error);
+        console.error('Error saving to localStorage:', error);
     }
+}
+
+// Save database to server
+async function saveDatabaseToServer() {
+    if (!serverAvailable) {
+        console.log('⚠️ Server not available, saving to localStorage only');
+        saveDatabaseToLocal();
+        return;
+    }
+    
+    try {
+        // Sync with server
+        const response = await fetch(`${API_BASE_URL}/sync`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                records: expenseDB.records,
+                lastId: expenseDB.lastId
+            })
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+                expenseDB = {
+                    records: data.records || [],
+                    lastId: data.lastId || 0
+                };
+                console.log('✅ Database synced with server');
+                saveDatabaseToLocal(); // Update local backup
+                return true;
+            }
+        }
+    } catch (error) {
+        console.error('Error syncing with server:', error);
+        serverAvailable = false;
+    }
+    
+    // Fallback to localStorage
+    saveDatabaseToLocal();
+    return false;
 }
 
 // Initialize app
-document.addEventListener('DOMContentLoaded', function() {
-    loadDatabase();
+document.addEventListener('DOMContentLoaded', async function() {
+    await loadDatabase();
     updateStats();
     renderRecords();
     setDefaultDates();
     createStarfield();
+    
+    // Try to sync with server every 30 seconds
+    setInterval(async () => {
+        if (serverAvailable) {
+            await saveDatabaseToServer();
+        }
+    }, 30000);
 });
 
 // Create animated starfield
@@ -206,7 +284,7 @@ function handleAddCreditExpense(event) {
 }
 
 // Add record to database
-function addRecord(type, amount, category, description, date) {
+async function addRecord(type, amount, category, description, date) {
     // Validate inputs
     if (!type || !amount || amount <= 0 || !category || !date) {
         console.error('Invalid record data:', { type, amount, category, date });
@@ -224,8 +302,42 @@ function addRecord(type, amount, category, description, date) {
         timestamp: new Date().toISOString()
     };
     
+    // Add to local database
     expenseDB.records.push(record);
-    saveDatabase();
+    
+    // Try to save to server
+    if (serverAvailable) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/add_expense`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(record)
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    console.log('✅ Expense saved to server');
+                    // Update with server response
+                    if (data.record) {
+                        const index = expenseDB.records.findIndex(r => r.id === record.id);
+                        if (index !== -1) {
+                            expenseDB.records[index] = data.record;
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error saving to server:', error);
+            serverAvailable = false;
+        }
+    }
+    
+    // Always save to localStorage as backup
+    saveDatabaseToLocal();
+    
     updateStats();
     renderRecords();
     
@@ -234,10 +346,27 @@ function addRecord(type, amount, category, description, date) {
 }
 
 // Delete record
-function deleteRecord(id) {
+async function deleteRecord(id) {
     if (confirm('Are you sure you want to delete this record?')) {
+        // Try to delete from server
+        if (serverAvailable) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/delete_expense/${id}`, {
+                    method: 'DELETE',
+                });
+                
+                if (response.ok) {
+                    console.log('✅ Expense deleted from server');
+                }
+            } catch (error) {
+                console.error('Error deleting from server:', error);
+                serverAvailable = false;
+            }
+        }
+        
+        // Remove from local database
         expenseDB.records = expenseDB.records.filter(record => record.id !== id);
-        saveDatabase();
+        saveDatabaseToLocal();
         updateStats();
         renderRecords();
         showNotification('Record deleted successfully!');
