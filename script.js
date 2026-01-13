@@ -295,6 +295,9 @@ function formatCategory(category) {
 function getFilteredRecords() {
     let records = [...expenseDB.records];
     
+    // Exclude income records
+    records = records.filter(record => record.type !== 'income');
+    
     // Filter by type
     const typeFilter = document.getElementById('filterType').value;
     if (typeFilter !== 'all') {
