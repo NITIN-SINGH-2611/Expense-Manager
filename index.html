@@ -149,6 +149,16 @@
                         <label for="expenseDate">Date</label>
                         <input type="date" id="expenseDate" required>
                     </div>
+                    <script>
+                        // Set default date to today when page loads
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const today = new Date().toISOString().split('T')[0];
+                            const expenseDateInput = document.getElementById('expenseDate');
+                            if (expenseDateInput) {
+                                expenseDateInput.value = today;
+                            }
+                        });
+                    </script>
                     <div class="form-actions">
                         <button type="button" class="btn-cancel" onclick="closeModal('expenseModal')">Cancel</button>
                         <button type="submit" class="btn-submit">Add Expense</button>

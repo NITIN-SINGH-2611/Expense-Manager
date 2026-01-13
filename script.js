@@ -88,11 +88,23 @@ function setDefaultDates() {
 
 // Modal functions
 function showAddExpenseModal() {
+    // Set today's date before showing modal
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('expenseDate');
+    if (dateInput) {
+        dateInput.value = today;
+    }
     document.getElementById('expenseModal').classList.add('show');
     document.getElementById('expenseAmount').focus();
 }
 
 function showAddCreditModal() {
+    // Set today's date before showing modal
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('creditDate');
+    if (dateInput) {
+        dateInput.value = today;
+    }
     document.getElementById('creditModal').classList.add('show');
     document.getElementById('creditCardName').focus();
 }
@@ -121,10 +133,33 @@ window.onclick = function(event) {
 function handleAddExpense(event) {
     event.preventDefault();
     
-    const amount = parseFloat(document.getElementById('expenseAmount').value);
-    const category = document.getElementById('expenseCategory').value;
-    const description = document.getElementById('expenseDescription').value || 'Expense';
-    const date = document.getElementById('expenseDate').value;
+    const amountInput = document.getElementById('expenseAmount');
+    const categoryInput = document.getElementById('expenseCategory');
+    const descriptionInput = document.getElementById('expenseDescription');
+    const dateInput = document.getElementById('expenseDate');
+    
+    if (!amountInput || !categoryInput || !dateInput) {
+        console.error('Expense form elements not found');
+        showNotification('Error: Form elements not found. Please refresh the page.');
+        return;
+    }
+    
+    const amount = parseFloat(amountInput.value);
+    const category = categoryInput.value;
+    const description = descriptionInput.value || 'Expense';
+    
+    // Use today's date if date is not set
+    let date = dateInput.value;
+    if (!date) {
+        date = new Date().toISOString().split('T')[0];
+        dateInput.value = date;
+    }
+    
+    if (!amount || amount <= 0) {
+        showNotification('Please enter a valid amount!');
+        amountInput.focus();
+        return;
+    }
     
     addRecord('expense', amount, category, description, date);
     closeModal('expenseModal');
