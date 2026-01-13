@@ -189,6 +189,39 @@ function deleteRecord(id) {
     }
 }
 
+// Duplicate expense with today's date
+function duplicateExpense(id) {
+    const originalRecord = expenseDB.records.find(record => record.id === id);
+    
+    if (!originalRecord) {
+        showNotification('Record not found!');
+        return;
+    }
+    
+    if (originalRecord.type !== 'expense') {
+        showNotification('Only expenses can be duplicated!');
+        return;
+    }
+    
+    // Create duplicate with today's date
+    const today = new Date().toISOString().split('T')[0];
+    const duplicateRecord = {
+        id: ++expenseDB.lastId,
+        type: originalRecord.type,
+        amount: originalRecord.amount,
+        category: originalRecord.category,
+        description: originalRecord.description,
+        date: today,
+        timestamp: new Date().toISOString()
+    };
+    
+    expenseDB.records.push(duplicateRecord);
+    saveDatabase();
+    updateStats();
+    renderRecords();
+    showNotification('Expense duplicated with today\'s date!');
+}
+
 // Update statistics
 function updateStats() {
     let totalIncome = 0;
@@ -251,6 +284,11 @@ function renderRecords() {
         const amountClass = record.type === 'income' ? 'positive' : 'negative';
         const amountSign = record.type === 'income' ? '+' : '-';
         
+        // Show duplicate button only for expenses
+        const duplicateButton = record.type === 'expense' 
+            ? `<button class="btn-duplicate" onclick="duplicateExpense(${record.id})" title="Duplicate with today's date">➕</button>`
+            : '';
+        
         return `
             <tr>
                 <td>${date}</td>
@@ -259,7 +297,10 @@ function renderRecords() {
                 <td>${record.description}</td>
                 <td class="amount ${amountClass}">${amountSign}${formatCurrency(record.amount)}</td>
                 <td>
-                    <button class="btn-delete" onclick="deleteRecord(${record.id})">Delete</button>
+                    <div class="action-buttons-cell">
+                        ${duplicateButton}
+                        <button class="btn-delete" onclick="deleteRecord(${record.id})">Delete</button>
+                    </div>
                 </td>
             </tr>
         `;

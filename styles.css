@@ -477,6 +477,34 @@ body::before {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
+.action-buttons-cell {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-duplicate {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+}
+
+.btn-duplicate:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
 .btn-delete {
     padding: 6px 12px;
     background: rgba(255, 255, 255, 0.15);
