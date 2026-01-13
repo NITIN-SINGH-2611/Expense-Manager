@@ -179,6 +179,13 @@ function handleAddCreditExpense(event) {
 
 // Add record to database
 function addRecord(type, amount, category, description, date) {
+    // Validate inputs
+    if (!type || !amount || amount <= 0 || !category || !date) {
+        console.error('Invalid record data:', { type, amount, category, date });
+        showNotification('Error: Invalid data. Please check all fields.');
+        return;
+    }
+    
     const record = {
         id: ++expenseDB.lastId,
         type: type,
