@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDatabase();
     updateStats();
     renderRecords();
-    populateCategories();
     setDefaultDates();
     createStarfield();
 });
@@ -310,17 +309,19 @@ function formatCurrency(amount) {
 // Render records table
 function renderRecords() {
     const tbody = document.getElementById('recordsTableBody');
-    const filteredRecords = getFilteredRecords();
     
-    if (filteredRecords.length === 0) {
+    // Get all records excluding income
+    let records = expenseDB.records.filter(record => record.type !== 'income');
+    
+    if (records.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="no-data">No records found. Add your first expense!</td></tr>';
         return;
     }
     
     // Sort by date (newest first)
-    filteredRecords.sort((a, b) => new Date(b.date) - new Date(a.date));
+    records.sort((a, b) => new Date(b.date) - new Date(a.date));
     
-    tbody.innerHTML = filteredRecords.map(record => {
+    tbody.innerHTML = records.map(record => {
         const date = new Date(record.date).toLocaleDateString('en-IN', {
             year: 'numeric',
             month: 'short',
@@ -362,78 +363,6 @@ function formatCategory(category) {
     ).join(' ');
 }
 
-// Get filtered records
-function getFilteredRecords() {
-    let records = [...expenseDB.records];
-    
-    // Exclude income records
-    records = records.filter(record => record.type !== 'income');
-    
-    // Filter by type
-    const typeFilter = document.getElementById('filterType').value;
-    if (typeFilter !== 'all') {
-        records = records.filter(record => record.type === typeFilter);
-    }
-    
-    // Filter by category
-    const categoryFilter = document.getElementById('filterCategory').value;
-    if (categoryFilter !== 'all') {
-        records = records.filter(record => record.category === categoryFilter);
-    }
-    
-    // Filter by date
-    const dateFilter = document.getElementById('filterDate').value;
-    if (dateFilter) {
-        records = records.filter(record => {
-            const recordDate = new Date(record.date);
-            const filterDate = new Date(dateFilter);
-            return recordDate.getFullYear() === filterDate.getFullYear() &&
-                   recordDate.getMonth() === filterDate.getMonth();
-        });
-    }
-    
-    return records;
-}
-
-// Apply filters
-function applyFilters() {
-    renderRecords();
-    updateCategoryFilter();
-}
-
-// Clear filters
-function clearFilters() {
-    document.getElementById('filterType').value = 'all';
-    document.getElementById('filterCategory').value = 'all';
-    document.getElementById('filterDate').value = '';
-    renderRecords();
-}
-
-// Populate categories
-function populateCategories() {
-    const categorySelect = document.getElementById('filterCategory');
-    const categories = new Set();
-    
-    expenseDB.records.forEach(record => {
-        categories.add(record.category);
-    });
-    
-    // Clear existing options except "All Categories"
-    categorySelect.innerHTML = '<option value="all">All Categories</option>';
-    
-    // Add categories
-    Array.from(categories).sort().forEach(category => {
-        const option = document.createElement('option');
-        option.value = category;
-        option.textContent = formatCategory(category);
-        categorySelect.appendChild(option);
-    });
-}
-
-// Update category filter options
-function updateCategoryFilter() {
-    populateCategories();
-}
 
 // Show notification
 function showNotification(message) {

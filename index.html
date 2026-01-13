@@ -65,29 +65,6 @@
                 </button>
             </div>
 
-            <!-- Filters -->
-            <div class="filters-section">
-                <div class="filter-group">
-                    <label for="filterType">Filter by Type:</label>
-                    <select id="filterType" onchange="applyFilters()">
-                        <option value="all">All</option>
-                        <option value="expense">Expense</option>
-                        <option value="credit">Credit Card</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="filterCategory">Filter by Category:</label>
-                    <select id="filterCategory" onchange="applyFilters()">
-                        <option value="all">All Categories</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label for="filterDate">Filter by Date:</label>
-                    <input type="month" id="filterDate" onchange="applyFilters()">
-                </div>
-                <button class="btn-clear" onclick="clearFilters()">Clear Filters</button>
-            </div>
-
             <!-- Records Table -->
             <div class="records-section">
                 <h2 class="section-title">📋 All Records</h2>
